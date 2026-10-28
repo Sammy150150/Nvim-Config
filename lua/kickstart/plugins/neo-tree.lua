@@ -1,0 +1,29 @@
+-- Neo-tree is a Neovim plugin to browse the file system
+-- https://github.com/nvim-neo-tree/neo-tree.nvim
+--
+-- lazy.nvim spec: enable by uncommenting
+-- `{ import = "kickstart.plugins.neo-tree" }` in lua/config/lazy.lua
+
+return {
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    version = "*",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+    },
+    config = function()
+      vim.keymap.set("n", "\\", "<Cmd>Neotree reveal<CR>", { desc = "NeoTree reveal", silent = true })
+
+      require("neo-tree").setup {
+        filesystem = {
+          window = {
+            mappings = {
+              ["\\"] = "close_window",
+            },
+          },
+        },
+      }
+    end,
+  },
+}
