@@ -88,11 +88,9 @@ local spec = {
   {
     "brianhuster/live-preview.nvim",
     dependencies = {
-      -- You can choose one of the following pickers
+      -- Picker used by live-preview.nvim to browse files. Telescope is this
+      -- config's picker; the other pickers live-preview supports are optional.
       "nvim-telescope/telescope.nvim",
-      "ibhagwan/fzf-lua",
-      "echasnovski/mini.pick",
-      "folke/snacks.nvim",
     },
   },
 }

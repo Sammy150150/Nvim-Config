@@ -12,6 +12,24 @@ vim.g.netrw_keepdir = 0
 -- MSVC's `cl.exe`, which is not installed on this machine.
 vim.env.CC = "gcc"
 
+-- Git for Windows bundles `unzip`, which Neovim's zip support and mason look
+-- for. Append its usr/bin instead of prepending it, so the MSYS tools it
+-- contains cannot shadow the Windows ones earlier on PATH.
+if vim.fn.executable('unzip') == 0 and vim.fn.executable('git') == 1 then
+  local git_usr_bin = vim.fs.dirname(vim.fs.dirname(vim.fn.exepath('git'))) .. '/usr/bin'
+  if (vim.uv or vim.loop).fs_stat(git_usr_bin .. '/unzip.exe') then
+    vim.env.PATH = vim.env.PATH .. ';' .. git_usr_bin
+  end
+end
+
+-- plenary.nvim (loaded by telescope.nvim) still calls the deprecated
+-- `vim.F.if_nil`, which shows up as a warning in `:checkhealth`. Plenary is
+-- archived upstream, so point the alias at the non-deprecated implementation.
+-- TODO: remove once telescope/plenary no longer use `vim.F.if_nil`.
+if vim.nonnil then
+  vim.F.if_nil = vim.nonnil
+end
+
 require("config.lazy") -- Bootstraps lazy.nvim and loads all plugins
 
 vim.g.mapleader = " "          -- Sets global leader to Space
@@ -23,6 +41,9 @@ vim.opt.shiftwidth = 4     -- Number of spaces to use for each step of (auto)ind
 vim.opt.expandtab = true   -- Convert tabs to spaces
 vim.opt.showmode = true
 
+-- NOTE: 'shell' must be a shell (cmd.exe, pwsh.exe, bash, ...), not a terminal
+-- emulator: `:!`, `:terminal`, and `vim.fn.system()` pass shell arguments to it.
+-- Leave it at the default (cmd.exe) unless you deliberately configure a shell.
 
 --[[
 
